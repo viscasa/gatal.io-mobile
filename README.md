@@ -73,125 +73,125 @@ Sedangkan stateful widget adalah widget yang memiliki state internal yang dapat 
     }
     ```
 2. Buat class ItemCard untuk menampilkan data dari ItemHomePage menjadi sebuah tombol yang memiliki ikon dan teks:
-```dart
-class ItemCard extends StatelessWidget {
-  // Menampilkan kartu dengan ikon dan nama.
+    ```dart
+    class ItemCard extends StatelessWidget {
+    // Menampilkan kartu dengan ikon dan nama.
 
-  final ItemHomepage item;
+    final ItemHomepage item;
 
-  const ItemCard(this.item, {super.key});
+    const ItemCard(this.item, {super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      // Menentukan warna latar belakang dari tema aplikasi.
-      color: item.color,
-      // Membuat sudut kartu melengkung.
-      borderRadius: BorderRadius.circular(12),
+    @override
+    Widget build(BuildContext context) {
+        return Material(
+        // Menentukan warna latar belakang dari tema aplikasi.
+        color: item.color,
+        // Membuat sudut kartu melengkung.
+        borderRadius: BorderRadius.circular(12),
 
-      child: InkWell(
-        // Aksi ketika kartu ditekan.
-        onTap: () {
-          // Menampilkan pesan SnackBar saat kartu ditekan.
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-                SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!"))
-            );
-        },
-        // Container untuk menyimpan Icon dan Text
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              // Menyusun ikon dan teks di tengah kartu.
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
+        child: InkWell(
+            // Aksi ketika kartu ditekan.
+            onTap: () {
+            // Menampilkan pesan SnackBar saat kartu ditekan.
+            ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                    SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!"))
+                );
+            },
+            // Container untuk menyimpan Icon dan Text
+            child: Container(
+            padding: const EdgeInsets.all(8),
+            child: Center(
+                child: Column(
+                // Menyusun ikon dan teks di tengah kartu.
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                    Icon(
+                    item.icon,
+                    color: Colors.white,
+                    size: 30.0,
+                    ),
+                    const Padding(padding: EdgeInsets.all(3)),
+                    Text(
+                    item.name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white),
+                    ),
+                ],
                 ),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
             ),
-          ),
+            ),
         ),
-      ),
-    );
-  }
-}
-```
+        );
+    }
+    }
+    ```
 
 3. Buat variabel List myHomePage yang berisikan data-data buttonnya.
 
 4. Tampilkan button di homepage dengan cara menambahkan kode berikut di dalam class myHomePage:
-```dart
-// Menempatkan widget berikutnya di tengah halaman.
-Center(
-child: Column(
-    // Menyusun teks dan grid item secara vertikal.
+    ```dart
+    // Menempatkan widget berikutnya di tengah halaman.
+    Center(
+        child: Column(
+            // Menyusun teks dan grid item secara vertikal.
 
-    children: [
-    // Menampilkan teks sambutan dengan gaya tebal dan ukuran 18.
-    const Padding(
-        padding: EdgeInsets.only(top: 16.0),
-        child: Text(
-        'Welcome to GATAL.IO',
-        style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18.0,
-        ),
+            children: [
+                // Menampilkan teks sambutan dengan gaya tebal dan ukuran 18.
+                const Padding(
+                    padding: EdgeInsets.only(top: 16.0),
+                    child: Text(
+                    'Welcome to GATAL.IO',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                    ),
+                    ),
+                ),
+
+                // Grid untuk menampilkan ItemCard dalam bentuk grid 3 kolom.
+                GridView.count(
+                    primary: true,
+                    padding: const EdgeInsets.all(20),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 3,
+                    // Agar grid menyesuaikan tinggi kontennya.
+                    shrinkWrap: true,
+
+                    // Menampilkan ItemCard untuk setiap item dalam list items.
+                    children: items.map((ItemHomepage item) {
+                    return ItemCard(item);
+                    }).toList(),
+                ),
+            ],
         ),
     ),
-
-    // Grid untuk menampilkan ItemCard dalam bentuk grid 3 kolom.
-    GridView.count(
-        primary: true,
-        padding: const EdgeInsets.all(20),
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        crossAxisCount: 3,
-        // Agar grid menyesuaikan tinggi kontennya.
-        shrinkWrap: true,
-
-        // Menampilkan ItemCard untuk setiap item dalam list items.
-        children: items.map((ItemHomepage item) {
-        return ItemCard(item);
-        }).toList(),
-    ),
-    ],
-),
-),
-```
+    ```
 
 - [x] Mengimplementasikan warna-warna yang berbeda untuk setiap tombol (Lihat Daftar Produk, Tambah Produk, dan Logout).
 
-Hal ini sudah dilakukan dengan menambahkan atribut pada ItemHomePage yaitu objek Material color
+    Hal ini sudah dilakukan dengan menambahkan atribut pada ItemHomePage yaitu objek Material color
 
 - [x] Memunculkan Snackbar
 
-Dari kode berikut, snackbar sudah akan muncul ketika salah satu button ditekan.
+    Dari kode berikut, snackbar sudah akan muncul ketika salah satu button ditekan.
 
-```dart
-@override
-  Widget build(BuildContext context) {
-    return Material(
-      . . .
+    ```dart
+    @override
+    Widget build(BuildContext context) {
+        return Material(
+        . . .
 
-      child: InkWell(
-        // Aksi ketika kartu ditekan.
-        onTap: () {
-          // Menampilkan pesan SnackBar saat kartu ditekan.
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-                SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!"))
-            );
-        },
-```
+        child: InkWell(
+            // Aksi ketika kartu ditekan.
+            onTap: () {
+            // Menampilkan pesan SnackBar saat kartu ditekan.
+            ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                    SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!"))
+                );
+            },
+    ```
