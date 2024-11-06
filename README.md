@@ -12,30 +12,43 @@ Sedangkan stateful widget adalah widget yang memiliki state internal yang dapat 
 ### Widget apa saja yang digunakan pada proyek ini
 
 1. MaterialApp
-    Fungsi: Widget ini adalah root dari aplikasi Flutter. MaterialApp menyediakan berbagai konfigurasi, seperti title, theme, dan home. Ini juga menerapkan Material Design pada aplikasi.
+
+   Fungsi: Widget ini adalah root dari aplikasi Flutter. MaterialApp menyediakan berbagai konfigurasi, seperti title, theme, dan home. Ini juga menerapkan Material Design pada aplikasi.
 2. Scaffold
+
     Fungsi: Scaffold menyediakan struktur dasar halaman, seperti AppBar, body, floating action button, dan lain-lain. Pada proyek ini, Scaffold digunakan untuk membuat struktur halaman dengan AppBar di atas dan konten di dalam body.
 3. AppBar
+
     Fungsi: Widget ini menampilkan header atau toolbar di bagian atas halaman. Pada proyek ini, AppBar menampilkan judul aplikasi "GATAL.IO" dengan warna latar belakang yang diambil dari tema aplikasi.
 4. Padding
+
     Fungsi: Widget ini menambahkan jarak (padding) di sekitar widget anaknya. Dalam proyek ini, Padding digunakan untuk memberikan ruang di sekitar konten dalam body Scaffold.
 5. InfoCard (Custom Widget)
+
     Fungsi: Ini adalah widget custom yang dibuat untuk menampilkan informasi seperti NPM, Name, dan Class. InfoCard menampilkan judul dan konten dalam bentuk kartu.
 6. Card
+
     Fungsi: Widget Card menyediakan tampilan kotak dengan bayangan untuk membuat elemen yang terisolasi dan terlihat menonjol. Pada proyek ini, Card digunakan di dalam InfoCard untuk membuat tampilan informasi dengan bayangan.
 7. ItemCard (Custom Widget)
+
     Fungsi: Widget custom ini dibuat untuk menampilkan item seperti "Lihat Daftar Produk", "Tambah Produk", dan "Logout" dalam bentuk kartu dengan ikon dan teks. Setiap ItemCard memiliki warna latar belakang dan ikon yang berbeda.
 8. Material
+
     Fungsi: Material adalah widget dasar untuk aplikasi Material Design yang menyediakan elemen seperti shadow dan elevation. Pada proyek ini, Material digunakan di dalam ItemCard untuk memberikan warna latar belakang dan tampilan yang konsisten dengan Material Design.
 9. ScaffoldMessenger
-    Fungsi: ScaffoldMessenger digunakan untuk menampilkan pesan Snackbar dalam Scaffold. Di proyek ini, ScaffoldMessenger dipanggil dalam InkWell untuk menampilkan pesan ketika ItemCard ditekan.
+
+     Fungsi: ScaffoldMessenger digunakan untuk menampilkan pesan Snackbar dalam Scaffold. Di proyek ini, ScaffoldMessenger dipanggil dalam InkWell untuk menampilkan pesan ketika ItemCard ditekan.
 10. SnackBar
-    Fungsi: SnackBar adalah widget yang menampilkan pesan sementara di bagian bawah layar. Pada proyek ini, SnackBar digunakan untuk memberikan pesan ketika pengguna menekan suatu ItemCard.
+
+     Fungsi: SnackBar adalah widget yang menampilkan pesan sementara di bagian bawah layar. Pada proyek ini, SnackBar digunakan untuk memberikan pesan ketika pengguna menekan suatu ItemCard.
 11. Icon
+
     Fungsi: Widget Icon menampilkan ikon dari koleksi ikon bawaan Flutter (misalnya, Icons.add, Icons.logout). Pada proyek ini, Icon digunakan di dalam ItemCard untuk menampilkan ikon untuk setiap item.
 12. Text
+
     Fungsi: Widget Text digunakan untuk menampilkan teks. Dalam proyek ini, Text digunakan untuk menampilkan judul, konten pada InfoCard, dan nama pada ItemCard.
 13. SizedBox
+
     Fungsi: SizedBox adalah widget yang digunakan untuk menambahkan ruang atau ukuran kosong tertentu di antara widget. Di proyek ini, SizedBox digunakan untuk memberi jarak antar elemen, seperti antara judul dan isi InfoCard.
 
 ### fungsi dari `setState()`?
