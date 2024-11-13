@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gatal_io_mobile/menu.dart';
+import 'package:gatal_io_mobile/screens/menu.dart';
 
 void main() {
   runApp(const MyApp());

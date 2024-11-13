@@ -208,3 +208,94 @@ Sedangkan stateful widget adalah widget yang memiliki state internal yang dapat 
                 );
             },
     ```
+
+# Tugas 8
+### Penggunaan `const` pada Flutter
+Di Flutter, kata kunci `const` digunakan untuk mendefinisikan widget atau nilai konstan yang tidak akan berubah selama runtime. Penggunaan `const` memungkinkan Flutter untuk mengenali objek sebagai "konstan" sejak awal, yang berarti hanya perlu diinisialisasi satu kali dan dapat digunakan kembali tanpa perlu di-render ulang. Hal ini sangat efisien dalam hal memori dan performa, karena Flutter tidak perlu membuat ulang objek `const` yang sama berkali-kali ketika membangun ulang tampilan.
+
+Menggunakan `const` dapat menghemat memori aplikasi karena Flutter akan menggunakan satu instance dari objek `const` di seluruh aplikasi jika properti dan nilai objek tersebut sama. Ini terutama berguna pada widget yang bersifat statis atau tidak dipengaruhi oleh variabel dinamis, seperti ikon atau label teks yang tidak berubah. Penggunaan `const` juga memudahkan proses debug dan meningkatkan performa, karena Flutter dapat melewati proses rebuild pada widget statis.
+
+Namun, `const` sebaiknya tidak digunakan pada widget atau objek yang nilai atau tampilannya berubah-ubah selama runtime, seperti elemen yang bergantung pada data atau state yang dinamis. Contohnya, widget yang dipengaruhi oleh hasil input pengguna atau variabel yang bisa berubah seiring waktu tidak cocok menggunakan `const` karena membutuhkan rebuild saat ada perubahan.
+
+### Penggunaan `Column` dan `Row` pada Flutter
+Di Flutter, `Column` dan `Row` adalah widget yang digunakan untuk mengatur tata letak (layout) widget anaknya. Keduanya memiliki fungsi dasar yang sama, yaitu menata widget anak, tetapi `Column` menata widget secara vertikal, sedangkan `Row` menata widget secara horizontal. Penggunaan `Column` dan `Row` sangat penting untuk membangun antarmuka pengguna yang responsif dan rapi.
+
+Contoh penggunaan `Column` dan `Row` pada kode GATAL.IO yaitu:
+```dart
+...
+    // Kode ini akan menampilkan card yang disusun secara horizontal.
+    Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+            InfoCard(title: 'NPM', content: npm),
+            InfoCard(title: 'Name', content: name),
+            InfoCard(title: 'Class', content: className),
+        ],
+    ),
+...
+    // Menyusun ikon dan teks di tengah kartu secara vertikal.
+    Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+            Icon(
+                item.icon,
+                color: Colors.white,
+                size: 30.0,
+            ),
+            const Padding(padding: EdgeInsets.all(3)),
+            Text(
+                item.name,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white),
+            ),
+        ],
+    ),
+```
+
+### Elemen Input pada Halaman Form
+Pada tugas ini saya hanya menggunakan `TextFormField` untuk elemen inputnya. Elemen input ini digunakan untuk menerima teks dari pengguna. Di halaman form saya, TextFormField digunakan untuk berbagai tujuan, seperti memasukkan nama game, jumlah (amount), deskripsi, dan harga (price).
+
+Selain elemen tersebut terdapat beberapa elemen lain, seperti:
+1. Checkbox
+
+    Checkbox adalah elemen input yang memungkinkan pengguna untuk memilih opsi biner (ya atau tidak).
+2. Radio Button
+
+    Radio button memungkinkan pengguna memilih satu opsi dari beberapa pilihan yang disediakan.
+3. Switch
+
+    Switch adalah elemen input untuk pilihan biner, mirip dengan checkbox tetapi dalam bentuk sakelar yang lebih modern.
+4. Slider
+
+    Slider memungkinkan pengguna memilih nilai dalam rentang tertentu dengan menggeser tombol.
+5. Dropdown Button
+
+    Dropdown button memungkinkan pengguna memilih satu opsi dari daftar opsi yang bisa dibuka-tutup.
+
+### Tema pada Aplikasi GATAL.IO
+Pada aplikasi GATAL.IO saya mengimplementasikan tema terutama pada warna-warna yang ada pada aplikasi tersebut. Di sini saya mengubah warna primary untuk aplikasi ini menjadi hijau dengan cara menambahkan kode berikut di file `main.dart`. Kode berikut akan otomatis menyimpan warna hijau sebagai warna primary dari aplikasi ini.
+```dart
+...
+colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.green,
+        ).copyWith(secondary: Colors.green[400]),
+...
+```
+
+### Navigasi Halaman pada Flutter
+Untuk melakukan navigasi atau perpindahan halaman pada aplikasi ini saya menerapkan Navigator pada button-button yang ada untuk memindahkan halamannya. Terdapat dua jenis Navigator yang saya gunakan, yaitu Navigator.pushReplacement yang benar-benar mengganti halaman current sekarang dan Navigator.push yang mengganti halaman current, tetapi masih menyimpan halaman sebelumnya dan bisa kembali dengan menekan button arrow yang terletak di kiri atas aplikasi. Contoh kodenya adalah:
+```dart
+...
+Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+        builder: (context) => MyHomePage(),
+));
+...
+Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (context) => GameEntryFormPage(),
+));
+...
+```
