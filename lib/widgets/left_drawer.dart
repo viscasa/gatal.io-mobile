@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gatal_io_mobile/screens/list_product.dart';
 import 'package:gatal_io_mobile/screens/menu.dart';
 import 'package:gatal_io_mobile/screens/gameentry_form.dart';
 
@@ -50,7 +51,7 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.videogame_asset),
+            leading: const Icon(Icons.gamepad_rounded),
             title: const Text('Tambah Game'),
             // Bagian redirection ke MoodEntryFormPage
             onTap: () {
@@ -60,6 +61,17 @@ class LeftDrawer extends StatelessWidget {
                         builder: (context) => GameEntryFormPage(),
                       ));
             },
+          ),
+          ListTile(
+              leading: const Icon(Icons.videogame_asset),
+              title: const Text('Lihat Game'),
+              onTap: () {
+                  // Route menu ke halaman mood
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ProductPage()),
+                  );
+              },
           ),
         ],
       ),

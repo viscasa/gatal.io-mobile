@@ -299,3 +299,138 @@ Navigator.push(
 ));
 ...
 ```
+
+# Tugas 9
+
+### Model untuk Melakukan Pengambilan ataupun Pengiriman Data JSON
+Membuat model untuk pengambilan dan pengiriman data JSON sangat penting karena model memberikan struktur yang jelas untuk data yang diharapkan, memastikan konsistensi dan validasi data. Dengan model, data JSON dapat diubah menjadi objek yang lebih mudah dikelola dan dimanipulasi, serta memudahkan pengembang mengakses atribut data tanpa khawatir terjadi kesalahan. Jika tidak menggunakan model, pengolahan data JSON cenderung raw atau langsung, yang membuat kode sulit dibaca, rentan terhadap error seperti `KeyError` atau `NullPointerException`, dan kurang terjamin terhadap perubahan struktur data dari API. Selain itu, tidak adanya model dapat menyulitkan proses debugging dan pengembangan aplikasi yang lebih kompleks. Oleh karena itu, model berperan penting dalam menjaga keamanan, efisiensi, dan skalabilitas pengelolaan data JSON.
+
+### Fungsi dari Library _http_
+Library `http` pada Dart adalah pustaka yang digunakan untuk melakukan komunikasi HTTP, seperti mengirim permintaan `GET`, `POST`, `PUT`, atau `DELETE` ke server dan menerima respons dari API. Library ini memungkinkan aplikasi Dart atau Flutter untuk mengakses dan mengelola data dari server dengan menambahkan header, body, dan mendukung respons dalam format JSON, string, atau binary. Pada tugas ini, library ini digunakan untuk menghubungkan flutter ke projek Django yang saya sudah buat, baik itu untuk mengambil produk, menambahkan produk, ataupun autentikasi.
+
+### Mekanisme Pengiriman Data
+Pengiriman data dimulai dari input data pengguna pada formulir yang telah disediakan di aplikasi Flutter. Pengguna memasukkan data seperti nama, deskripsi, genre, dan harga game ke dalam field yang disertai validasi untuk memastikan data yang dimasukkan sesuai dengan format yang diharapkan. Setelah semua data valid, tombol "Save" akan mengirimkan data tersebut dalam format JSON ke endpoint server Django menggunakan metode `postJson`. Server Django menerima data, memprosesnya, dan menyimpannya ke basis data. Setelah penyimpanan berhasil, server mengirimkan respons berupa status yang menunjukkan keberhasilan atau kegagalan. Aplikasi Flutter kemudian memproses respons tersebut; jika berhasil, data akan ditampilkan pada halaman daftar item melalui metode `FutureBuilder` yang memuat data dari server menggunakan metode HTTP `GET`. Proses ini memastikan bahwa data yang dimasukkan pengguna dapat tersimpan dengan baik dan langsung ditampilkan kembali di aplikasi secara dinamis.
+
+### Mekanisme Autentikasi dari Login, Register, hingga Logout
+Mekanisme autentikasi dimulai dari proses **registrasi**, di mana pengguna memasukkan username, password, dan konfirmasi password pada Flutter. Data tersebut dikirim ke endpoint `/auth/register/` Django melalui metode POST menggunakan `CookieRequest`. Django memvalidasi kesesuaian password dan ketersediaan username, kemudian membuat akun baru jika valid, lalu mengembalikan respons keberhasilan. Untuk **login**, pengguna memasukkan username dan password pada Flutter, yang kemudian dikirim ke endpoint `/auth/login/`. Django memverifikasi kredensial dengan fungsi `authenticate()`. Jika valid dan akun aktif, sesi pengguna dibuat dengan `auth_login()`, dan respons login sukses dikirim kembali ke Flutter. Jika gagal, Django mengembalikan pesan kesalahan. Pada Flutter, respons login sukses diarahkan ke halaman utama aplikasi, menampilkan menu pengguna. Proses **logout** dilakukan dengan memanggil endpoint `/auth/logout/`. Django memproses logout dengan `auth_logout()` untuk menghapus sesi pengguna, mengembalikan respons keberhasilan ke Flutter, dan pengguna diarahkan keluar dari aplikasi.
+
+### Proses Implementasi Fitur Registrasi hingga Melakukan Filter pada Tampilan Produk Game
+
+- [x] Mengimplementasikan fitur registrasi akun pada proyek tugas Flutter.
+1. Buat app baru pada Django dengan nama authentication yang berguna untuk autentikasi user.
+2. Buat function pada app tersebut yang berguna untuk register dengan membuat kode berikut di views.py:
+    ```python
+    @csrf_exempt
+    def register(request):
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            username = data['username']
+            password1 = data['password1']
+            password2 = data['password2']
+
+            # Check if the passwords match
+            if password1 != password2:
+                return JsonResponse({
+                    "status": False,
+                    "message": "Passwords do not match."
+                }, status=400)
+            
+            # Check if the username is already taken
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({
+                    "status": False,
+                    "message": "Username already exists."
+                }, status=400)
+            
+            # Create the new user
+            user = User.objects.create_user(username=username, password=password1)
+            user.save()
+            
+            return JsonResponse({
+                "username": user.username,
+                "status": 'success',
+                "message": "User created successfully!"
+            }, status=200)
+        
+        else:
+            return JsonResponse({
+                "status": False,
+                "message": "Invalid request method."
+            }, status=400)
+    ```
+3. Buat halaman [register](https://github.com/viscasa/gatal.io-mobile/blob/main/lib/screens/register.dart) pada app flutter.
+
+- [x] Buat function pada proyek Django yang berguna untuk login dengan membuat kode berikut di views.py:
+    ```python
+    @csrf_exempt
+    def login(request):
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                auth_login(request, user)
+                # Status login sukses.
+                return JsonResponse({
+                    "username": user.username,
+                    "status": True,
+                    "message": "Login sukses!"
+                    # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
+                }, status=200)
+            else:
+                return JsonResponse({
+                    "status": False,
+                    "message": "Login gagal, akun dinonaktifkan."
+                }, status=401)
+
+        else:
+            return JsonResponse({
+                "status": False,
+                "message": "Login gagal, periksa kembali email atau kata sandi."
+            }, status=401)
+    ```
+2. Buat halaman [login](https://github.com/viscasa/gatal.io-mobile/blob/main/lib/screens/login.dart) pada app flutter.
+
+- [x]  Mengintegrasikan sistem autentikasi Django dengan proyek tugas Flutter.
+1. Dengan menjalankan 2 step sebelumnya, flutter sudah terintegrasikan dengan proyek Django yang saya buat sebelumnya.
+
+- [x] Membuat model kustom sesuai dengan proyek aplikasi Django.
+1. Buat file baru pada direktori lib/models dengan nama product.dart yang akan digunakan sebagaim kode modelnya.
+2. Buka endpoint JSON yang telah dibuat pada proyek Django
+3. Salinlah data JSON dan buka situs web [Quicktype](http://app.quicktype.io/).
+4. Ambil kode yang telah dibuat pada Quicktype dan taruh di file yang sudah kita buat sbelumnya.
+5. Models untuk Flutter telah terbuat.
+
+- [x]  Membuat halaman yang berisi daftar semua item yang terdapat pada endpoint JSON di Django yang telah kamu deploy.
+1. Buat sebuah file dart baru bernama list_product.dart pada direktori lib/screens/
+2. Isi filenya dengan [kode berikut](https://github.com/viscasa/gatal.io-mobile/blob/main/lib/screens/list_product.dart)
+3. Flutter akan menampilkan nama produk-produk yang sudah Anda buat sebelumnya.
+
+- [x] Membuat halaman detail untuk setiap item yang terdapat pada halaman daftar Item.
+1. Buat sebuah file dart baru bernama detail_product.dart pada direktori lib/screens/
+2. Isi filenya dengan [kode berikut](https://github.com/viscasa/gatal.io-mobile/blob/main/lib/screens/detail_product.dart)
+3. Flutter akan menampilak detail produk setelah Anda menekan salah satu produk di daftar produk.
+
+- [x]  Melakukan filter pada halaman daftar item dengan hanya menampilkan item yang terasosiasi dengan pengguna yang login.
+1. Kode pada list_product.dart sudah terfilter dengan pengguna yang login karena kode berikut akan meminta Cookie ke web pada proyek Django yang di mana pada proyek Django sudah diimplementasikan filter product untuk usernya.
+    ```dart
+    class _ProductPageState extends State<ProductPage> {
+    Future<List<Product>> fetchMood(CookieRequest request) async {
+        // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+        final response = await request.get('http://127.0.0.1:8000/json/');
+        
+        // Melakukan decode response menjadi bentuk json
+        var data = response;
+        
+        // Melakukan konversi data json menjadi object Product
+        List<Product> listMood = [];
+        for (var d in data) {
+        if (d != null) {
+            listMood.add(Product.fromJson(d));
+        }
+        }
+        return listMood;
+    }
+    ...
+    }
+    ```

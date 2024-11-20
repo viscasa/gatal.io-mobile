@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:gatal_io_mobile/screens/menu.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class GameEntryFormPage extends StatefulWidget {
   const GameEntryFormPage({super.key});
@@ -9,12 +14,14 @@ class GameEntryFormPage extends StatefulWidget {
 
 class _GameEntryFormPageState extends State<GameEntryFormPage> {
   final _formKey = GlobalKey<FormState>();
-  String _game = "";
-  int _amount = 0;
+  String _name = "";
 	String _description = "";
+	String _genre = "";
 	int _price = 0;
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -43,7 +50,7 @@ class _GameEntryFormPageState extends State<GameEntryFormPage> {
                   ),
                   onChanged: (String? value) {
                     setState(() {
-                      _game = value!;
+                      _name = value!;
                     });
                   },
                   validator: (String? value) {
@@ -52,35 +59,6 @@ class _GameEntryFormPageState extends State<GameEntryFormPage> {
                     }
                     if (value.length > 32) {
                       return "Name can't be more than 32 characters!";
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: "Amount",
-                    labelText: "Amount",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _amount = int.tryParse(value!) ?? 0;
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Amount can't be empty!";
-                    }
-                    if (int.tryParse(value) == null) {
-                      return "Amount must be a number!";
-                    }
-                    if (int.tryParse(value)! < 0) {
-                      return "Amount can't be negative!";
                     }
                     return null;
                   },
@@ -107,6 +85,32 @@ class _GameEntryFormPageState extends State<GameEntryFormPage> {
                     }
                     if (value.length > 256) {
                       return "Description can't be more than 256 characters!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Genre",
+                    labelText: "Genre",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _genre = value!;
+                    });
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Genre can't be empty!";
+                    }
+                    if (value.length > 256) {
+                      return "Genre can't be more than 256 characters!";
                     }
                     return null;
                   },
@@ -150,36 +154,38 @@ class _GameEntryFormPageState extends State<GameEntryFormPage> {
                       backgroundColor: WidgetStateProperty.all(
                           Theme.of(context).colorScheme.primary),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Game berhasil tersimpan'),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Game: $_game'),
-                                    Text('Amount: $_amount'),
-                                    Text('Description: $_description'),
-                                    Text('Price: $_price')
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    _formKey.currentState!.reset();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                          // Kirim ke Django dan tunggu respons
+                          // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+                          final response = await request.postJson(
+                              "http://127.0.0.1:8000/create-flutter/",
+                              jsonEncode(<String, String>{
+                                  'name': _name,
+                                  'price': _price.toString(),
+                                  'description': _description,
+                                  'genre': _genre
+                              // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                              }),
+                          );
+                          if (context.mounted) {
+                              if (response['status'] == 'success') {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                  content: Text("Product baru berhasil disimpan!"),
+                                  ));
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => MyHomePage()),
+                                  );
+                              } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                      content:
+                                          Text("Terdapat kesalahan, silakan coba lagi."),
+                                  ));
+                              }
+                          }
                       }
                     },
                     child: const Text(
@@ -193,6 +199,6 @@ class _GameEntryFormPageState extends State<GameEntryFormPage> {
           )
         ),
       ),
-    );;
+    );
   }
 }
